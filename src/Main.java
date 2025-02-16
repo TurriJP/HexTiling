@@ -10,6 +10,7 @@ public class Main extends PApplet {
     private int[][] groups;
     int nGroups;
     private static final Random generator = new Random();
+    int time;
 
     public void settings(){
         size(800, 800);
@@ -18,6 +19,7 @@ public class Main extends PApplet {
         grid = new Grid(32, this);
         groups = new int[10][3];
         nGroups = 0;
+        time = millis();
     }
 
     public void draw() {
@@ -26,6 +28,15 @@ public class Main extends PApplet {
 //            p.display();
 //        }
         grid.display();
+        if (millis() > time + 2000) {
+            System.out.println("ESTOU NO IF0");
+            for (Hex h : grid.hexes.values()) {
+                if (h.group != -1) {
+                    grid.colorNeighbors(h);
+                }
+            }
+            time = millis();
+        }
     }
 
     public void mouseClicked() {

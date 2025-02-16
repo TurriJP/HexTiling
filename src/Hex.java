@@ -1,12 +1,16 @@
 import processing.core.PApplet;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Hex {
     PApplet sketch;
     Point[] vertexes;
     Line[] edges;
     int group, r, g, b;
+    int row, column;
+    CubicCoord cubeCoord;
+    boolean top, bottom, left, right;
 
     Hex(PApplet sketch, Grid grid, Point center) {
         this.sketch = sketch;
@@ -17,6 +21,15 @@ public class Hex {
 
         int centerX = center.row;
         int centerY = center.column;
+        this.row = center.row;
+        this.column = center.column;
+
+        this.cubeCoord = new CubicCoord(centerX, centerY, sketch.width, sketch.height);
+
+        top = row == 0;
+        left = column == 0;
+        right = row == grid.rows - 1;
+        bottom = column == grid.columns - 1;
 
         // Processar vértices
         vertexes = new Point[6];
@@ -26,7 +39,6 @@ public class Hex {
             vertexes[2] = grid.points.get(centerX).get(centerY + 1);
             vertexes[3] = grid.points.get(centerX + 1).get(centerY + 1);
             vertexes[4] = grid.points.get(centerX + 1).get(centerY);
-            vertexes[5] = grid.points.get(centerX).get(centerY - 1);
         }
         else {
             vertexes[0] = grid.points.get(centerX - 1).get(centerY - 1);
@@ -34,8 +46,8 @@ public class Hex {
             vertexes[2] = grid.points.get(centerX).get(centerY + 1);
             vertexes[3] = grid.points.get(centerX + 1).get(centerY);
             vertexes[4] = grid.points.get(centerX + 1).get(centerY - 1);
-            vertexes[5] = grid.points.get(centerX).get(centerY - 1);
         }
+        vertexes[5] = grid.points.get(centerX).get(centerY - 1);
 
         edges = new Line[6];
         for (int i = 0; i < 6; i++) {
@@ -90,6 +102,30 @@ public class Hex {
         return wn;
     }
 
+
+//    List<Hex> neighbors() {
+//
+//        // First element is the top hexagon,
+//        // the rest follow clockwise
+//
+//        OffsetCoord topHex = null;
+//        OffsetCoord topLeftHex = null;
+//        OffsetCoord topRightHex = null;
+//        OffsetCoord bottomHex = null;
+//        OffsetCoord bottomLeftHex = null;
+//        OffsetCoord bottomRightHex = null;
+//        if (!top) {
+//            topHex = cube_to_oddq(this);
+//
+//        }
+//        if (!left) {
+//
+//        }
+//
+//        List<OffsetCoord> neighbors = List.of(topHex, null, null, null, null, null);
+//        return neighbors;
+//    }
+
     void display() {
         if (group >= 0) {
             sketch.pushMatrix();
@@ -104,4 +140,29 @@ public class Hex {
 
     }
 
+    OffsetCoord cube_to_oddq(Hex hex){
+    int col = hex.cubeCoord.q;
+    int row = hex.r + (hex.cubeCoord.q - (hex.cubeCoord.q&1)) / 2;
+    return new OffsetCoord(col, row);
+    }
+
+}
+
+class CubicCoord{
+    int q, r, s;
+    CubicCoord(int gridX, int gridY, int maxWidth, int maxHeight) {
+        this.q = gridX;
+        this.r = gridY - (gridX - (gridX&1)) / 2;
+        this.s = -q -r;
+
+    }
+
+}
+
+class OffsetCoord{
+    int x, y;
+    OffsetCoord(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 }

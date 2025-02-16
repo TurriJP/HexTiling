@@ -2,6 +2,7 @@ import processing.core.PApplet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static java.lang.Math.sqrt;
 
@@ -19,6 +20,27 @@ public class Grid {
     ArrayList<ArrayList<Point>> points;
     HashMap<String, Line> edges;
     HashMap<Point, Hex> hexes;
+    List<List<List<Integer>>> directionDifferences = List.of(
+            // even cols
+            List.of(
+                    List.of(1, 0),
+                    List.of(1, -1),
+                    List.of(0, -1),
+                    List.of(-1, -1),
+                    List.of(-1, 0),
+                    List.of(0, 1)
+            ),
+            // odd cols
+            List.of(
+                    List.of(1, 1),
+                    List.of(1, 0),
+                    List.of(0, -1),
+                    List.of(-1, 0),
+                    List.of(-1, 1),
+                    List.of(0, 1)
+            )
+    );
+
     Grid(int size, PApplet sketch){
         this.sketch = sketch;
         this.size = size;
@@ -66,6 +88,39 @@ public class Grid {
             }
         }
         return hexes;
+    }
+
+    ArrayList<Hex> neighbors(Hex hex) {
+        int parity = hex.column & 1;
+        ArrayList<Hex> neighbors = new ArrayList<Hex>();
+        for (int i  = 0; i < 6; i++) {
+            List<Integer> diff = directionDifferences.get(parity).get(i);
+            int coordX = hex.column + diff.get(0);
+            int coordY = hex.row + diff.get(1);
+            System.out.println(coordX);
+            System.out.println(coordY);
+            if (
+                    coordX >= 0 && coordX < columns && coordY > 0 && coordY < rows
+            ) {
+                System.out.println(points.get(coordX).get(coordY));
+                neighbors.add(hexes.get(points.get(coordX).get(coordY)));
+            }
+        }
+        System.out.println(neighbors);
+        System.out.println(neighbors.size());
+        return neighbors;
+    }
+
+    void colorNeighbors(Hex hex) {
+        ArrayList<Hex> neighbors = neighbors(hex);
+        for (Hex h : neighbors) {
+            if (h != null && h.group == -1) {
+                h.r = hex.r;
+                h.g = hex.g;
+                h.b = hex.b;
+                h.group = hex.group;
+            }
+        }
     }
 
     void display() {
