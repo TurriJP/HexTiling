@@ -12,6 +12,8 @@ public class Hex {
     CubicCoord cubeCoord;
     boolean top, bottom, left, right;
 
+    Point centerPoint;
+
     Hex(PApplet sketch, Grid grid, Point center) {
         this.sketch = sketch;
         this.group = -1;
@@ -25,6 +27,7 @@ public class Hex {
         this.column = center.column;
 
         this.cubeCoord = new CubicCoord(centerX, centerY, sketch.width, sketch.height);
+        this.centerPoint = center;
 
         top = row == 0;
         left = column == 0;
@@ -53,7 +56,9 @@ public class Hex {
         for (int i = 0; i < 6; i++) {
             Line l = new Line(vertexes[i], vertexes[(i+1)%6], sketch);
             edges[i] = l;
-            grid.edges.putIfAbsent(pointsAsString(l.a, l.b), l);
+            String key = pointsAsString(l.a, l.b);
+            grid.edges.putIfAbsent(key, l);
+            grid.edges.get(key).neighboringHex.add(this);
         }
     }
 
@@ -102,39 +107,24 @@ public class Hex {
         return wn;
     }
 
-
-//    List<Hex> neighbors() {
-//
-//        // First element is the top hexagon,
-//        // the rest follow clockwise
-//
-//        OffsetCoord topHex = null;
-//        OffsetCoord topLeftHex = null;
-//        OffsetCoord topRightHex = null;
-//        OffsetCoord bottomHex = null;
-//        OffsetCoord bottomLeftHex = null;
-//        OffsetCoord bottomRightHex = null;
-//        if (!top) {
-//            topHex = cube_to_oddq(this);
-//
-//        }
-//        if (!left) {
-//
-//        }
-//
-//        List<OffsetCoord> neighbors = List.of(topHex, null, null, null, null, null);
-//        return neighbors;
-//    }
-
     void display() {
         if (group >= 0) {
             sketch.pushMatrix();
+
+            // HEXAGON
             sketch.fill(r, g, b);
             sketch.beginShape();
             for (int i = 0; i < 6; i++) {
                 sketch.vertex(vertexes[i].x, vertexes[i].y);
             }
             sketch.endShape();
+
+            // TEXT
+            String content = "" + centerPoint.row + "," + centerPoint.column;
+            sketch.textSize(16);
+            sketch.fill(255, 255, 255);
+            sketch.text(content, centerPoint.x -16, centerPoint.y);
+
             sketch.popMatrix();
         }
 

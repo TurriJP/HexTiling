@@ -28,11 +28,11 @@ public class Main extends PApplet {
 //            p.display();
 //        }
         grid.display();
-        if (millis() > time + 2000) {
-            System.out.println("ESTOU NO IF0");
+        if (millis() > time + 2000 && grid.emptyHexes > 0) {
+            System.out.println("Empty hexes: "+grid.emptyHexes);
             for (Hex h : grid.hexes.values()) {
                 if (h.group != -1) {
-                    grid.colorNeighbors(h);
+                    grid.colorNeighbors(h, false);
                 }
             }
             time = millis();
@@ -54,6 +54,7 @@ public class Main extends PApplet {
                     h.b = groups[nGroups][2];
                     h.group = nGroups;
                     nGroups++;
+                    grid.emptyHexes--;
                 }
             }
         }

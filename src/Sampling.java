@@ -15,7 +15,6 @@ public class Sampling {
 
     float minDist = 200;
     Point PoissonDiskSampling(ArrayList<Point> points) {
-        //System.out.println("Bora achar o ponto: " + currPoints);
         int maxAttempts = 100;
         int nAttempts = 0;
         Point newPoint = new Point(sketch);
@@ -28,7 +27,7 @@ public class Sampling {
             valid = true;
             for(Point p : points){
                 if (sketch.dist(p.x, p.y, newPoint.x, newPoint.y) < minDist) {
-                    //System.out.println("Vamo que vamo: "+i+" distância: "+dist(p.x, p.y, newPoint.x, newPoint.y));
+                    //System.out.println("Ponto: "+i+" distância: "+dist(p.x, p.y, newPoint.x, newPoint.y));
                     valid = false;
                     break;
                 }
