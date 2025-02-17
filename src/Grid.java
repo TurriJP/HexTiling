@@ -150,11 +150,11 @@ public class Grid {
 
 
         if (emptyHexes > 0) {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < columns; j++) {
-                    points.get(i).get(j).display();
-                }
-            }
+//            for (int i = 0; i < rows; i++) {
+//                for (int j = 0; j < columns; j++) {
+//                    points.get(i).get(j).display();
+//                }
+//            }
 
             for (Hex h : hexes.values()) {
                 h.display();
@@ -162,7 +162,7 @@ public class Grid {
         }
 
         for (Line l : edges.values()) {
-            l.display();
+            l.display(emptyHexes==0);
         }
 
         sketch.popMatrix();

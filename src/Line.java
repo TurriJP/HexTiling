@@ -17,24 +17,24 @@ public class Line{
         this.neighboringHex = new ArrayList<>();
     }
 
-    void display() {
+    void display(boolean isFinished) {
         if(show) {
             sketch.pushMatrix();
             sketch.fill(0, 0, 0);
-            createLine();
+            createLine(isFinished);
             sketch.popMatrix();
         }
     }
 
     void processBorder() {
-        if (neighboringHex.size() == 2 && neighboringHex.get(0).group == neighboringHex.get(1).group) {
+        if (neighboringHex.size() == 1 || (neighboringHex.size() == 2 && neighboringHex.get(0).group == neighboringHex.get(1).group)) {
             show = false;
         }
     }
 
-    void createLine() {
-        straightLine();
-//        jaggedLine();
+    void createLine(boolean isFinished) {
+        if (!isFinished ) straightLine();
+        else jaggedLine();
     }
 
     void straightLine() {

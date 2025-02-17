@@ -10,11 +10,11 @@ public class Hex {
     int group, r, g, b;
     int row, column;
     CubicCoord cubeCoord;
-    boolean top, bottom, left, right;
+    boolean top, bottom, left, right, showLabels;
 
     Point centerPoint;
 
-    Hex(PApplet sketch, Grid grid, Point center) {
+    Hex(PApplet sketch, Grid grid, Point center, boolean showLabels) {
         this.sketch = sketch;
         this.group = -1;
         this.r = 255;
@@ -28,6 +28,8 @@ public class Hex {
 
         this.cubeCoord = new CubicCoord(centerX, centerY, sketch.width, sketch.height);
         this.centerPoint = center;
+
+        this.showLabels = showLabels;
 
         top = row == 0;
         left = column == 0;
@@ -60,6 +62,10 @@ public class Hex {
             grid.edges.putIfAbsent(key, l);
             grid.edges.get(key).neighboringHex.add(this);
         }
+    }
+
+    Hex(PApplet sketch, Grid grid, Point center) {
+        this(sketch, grid, center, false);
     }
 
     String pointsAsString(Point a, Point b) {
@@ -120,10 +126,12 @@ public class Hex {
             sketch.endShape();
 
             // TEXT
-            String content = "" + centerPoint.row + "," + centerPoint.column;
-            sketch.textSize(16);
-            sketch.fill(255, 255, 255);
-            sketch.text(content, centerPoint.x -16, centerPoint.y);
+            if(showLabels) {
+                String content = "" + centerPoint.row + "," + centerPoint.column;
+                sketch.textSize(16);
+                sketch.fill(255, 255, 255);
+                sketch.text(content, centerPoint.x - 16, centerPoint.y);
+            }
 
             sketch.popMatrix();
         }
